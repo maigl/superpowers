@@ -18,6 +18,34 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 **Save plans to:** `docs/superpowers/plans/YYYY-MM-DD-<feature-name>.md`
 - (User preferences for plan location override this default)
 
+## Step 0: Create the Plan File Skeleton — MANDATORY FIRST ACTION
+
+Before writing any task content, you MUST create the plan file on disk with only:
+1. The plan header (see Plan Document Header below)
+2. A one-line description of each task as a heading: `### Task N: [Name]` followed by a single sentence describing what it does
+
+This skeleton is your outline. Write it to disk immediately. Confirm to the user: "Plan skeleton created at `<path>` with N tasks outlined. Writing tasks now."
+
+**Then write tasks one at a time.** Each response: read the current file, append the full content for exactly ONE task, save. Move to the next task in the next response turn.
+
+## Incremental Writing — CRITICAL
+
+**The #1 cause of plan-writing failures is generating too much in a single LLM response.** The model hits output token limits or API timeouts and the session hangs — the user sees nothing.
+
+**Rules:**
+1. Create the skeleton file first (Step 0 above).
+2. Write exactly ONE task per response turn. Save to disk. STOP.
+3. Tell the user: "Task N/M written. Continuing..." and proceed in the next turn.
+4. After all tasks: do the self-review in a final response.
+
+**Never compose more than one task in a single response.** If you feel the urge to "just finish the next task too" — STOP. Save what you have. The next task goes in the next turn.
+
+**Do NOT re-explore the codebase.** You already have context from brainstorming/spec. Only read a file if you need to verify a specific detail (an exact signature, a type definition).
+
+**Do NOT dispatch subagents** during plan writing. Use single targeted file reads only.
+
+**Keep code snippets focused.** Show only the code that changes or is new — not entire files.
+
 ## Scope Check
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
@@ -102,6 +130,8 @@ git add tests/path/test.py src/path/file.py
 git commit -m "feat: add specific feature"
 ```
 ````
+
+**After writing each task, save it to the plan file on disk immediately. One task per response turn — never accumulate.**
 
 ## No Placeholders
 
