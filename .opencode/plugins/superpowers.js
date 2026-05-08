@@ -98,7 +98,12 @@ ${toolMapping}
     // Using a user message instead of a system message avoids:
     //   1. Token bloat from system messages repeated every turn (#750)
     //   2. Multiple system messages breaking Qwen and other models (#894)
+    // Injection is opt-in: set SUPERPOWERS=1 in the environment to enable.
+    // When unset, skills remain available on demand via the skill tool but the
+    // ~1,400-token bootstrap block is skipped, reducing overhead for sessions
+    // that don't use skills.
     'experimental.chat.messages.transform': async (_input, output) => {
+      if (!process.env.SUPERPOWERS) return;
       const bootstrap = getBootstrapContent();
       if (!bootstrap || !output.messages.length) return;
       const firstUser = output.messages.find(m => m.info.role === 'user');
